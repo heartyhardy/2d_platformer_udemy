@@ -4,3 +4,5 @@
 -----
 
 ### Day 1: Project Setup
+
+### Day 2: Basic Movement
