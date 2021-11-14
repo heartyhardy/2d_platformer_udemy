@@ -19,11 +19,7 @@ func _ready():
 	pass # Replace with function body.
 
 func _process(delta):
-	var move_vec = Vector2.ZERO
-
-#	If right its positive, if left, negative. Outcome of this will decide the direction
-	move_vec.x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
-	move_vec.y = -1 if Input.is_action_just_pressed("jump") else 0
+	var move_vec = get_movement_vector()
 
 	if(move_vec.y < 0 && is_on_floor()):
 		velocity.y = move_vec.y  * max_jump_speed
@@ -41,3 +37,10 @@ func _process(delta):
 
 	velocity = move_and_slide(velocity, Vector2.UP)
 
+func get_movement_vector():
+	var move_vec = Vector2.ZERO
+
+#	If right its positive, if left, negative. Outcome of this will decide the direction
+	move_vec.x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
+	move_vec.y = -1 if Input.is_action_just_pressed("jump") else 0
+	return move_vec
