@@ -20,3 +20,8 @@
 - Added Frame independed Lerp for camera smoothing
 - Jittery in "Viewport" Window mode
 - Use [this](https://youtu.be/zxVQsi9wnw8) tutorial to implement a better camera follow with smoothing
+
+### Day 5: Animations, Character orientation and Coyote timer
+- Make sure to store ```is_on_floor()``` before ```move_and_slide()``` as it changes is_on_floor() internally
+- Check if character "was" on floor and ```!is_on_floor()``` to enable Coyote timer
+- Enable jumping if ```is_on_floor || !$CoyotoeTimer.is_stopped()```
