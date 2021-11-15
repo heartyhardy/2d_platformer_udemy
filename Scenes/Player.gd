@@ -21,7 +21,7 @@ func _ready():
 func _process(delta):
 	var move_vec = get_movement_vector()
 
-	if(move_vec.y < 0 && is_on_floor()):
+	if(move_vec.y < 0 && (is_on_floor() || !$CoyoteTimer.is_stopped())):
 		velocity.y = move_vec.y  * max_jump_speed
 		
 	velocity.x += move_vec.x * max_x_acceleration * delta
@@ -35,7 +35,14 @@ func _process(delta):
 	else:
 		velocity.y += gravity * delta
 
+	# Move and slide updates is_on_floor() internally so have to store it beforehand
+	var was_on_floor = is_on_floor()
 	velocity = move_and_slide(velocity, Vector2.UP)
+	
+	if(was_on_floor && !is_on_floor()):
+		$CoyoteTimer.start()
+	
+	update_animation()
 
 func get_movement_vector():
 	var move_vec = Vector2.ZERO
@@ -44,3 +51,16 @@ func get_movement_vector():
 	move_vec.x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
 	move_vec.y = -1 if Input.is_action_just_pressed("jump") else 0
 	return move_vec
+
+func update_animation():
+	var move_vec = get_movement_vector()
+		
+	if(!is_on_floor()):
+		$AnimatedSprite.play("jump")
+	elif(move_vec.x != 0):
+		$AnimatedSprite.play("run")
+	else:
+		$AnimatedSprite.play("idle")
+		
+	if(move_vec.x != 0):
+		$AnimatedSprite.flip_h = true if move_vec.x > 0 else false
