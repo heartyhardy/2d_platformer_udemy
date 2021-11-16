@@ -15,14 +15,19 @@ const jump_multiplier = 4
 
 var velocity = Vector2.ZERO
 
+var enable_double_jump = false
+
 func _ready():
 	pass # Replace with function body.
 
 func _process(delta):
 	var move_vec = get_movement_vector()
 
-	if(move_vec.y < 0 && (is_on_floor() || !$CoyoteTimer.is_stopped())):
+	if(move_vec.y < 0 && (is_on_floor() || !$CoyoteTimer.is_stopped() || enable_double_jump)):
 		velocity.y = move_vec.y  * max_jump_speed
+		if(!is_on_floor() && $CoyoteTimer.is_stopped()):
+			enable_double_jump = false
+		$CoyoteTimer.stop() #without this, player can't double jump if coyote timer is high
 		
 	velocity.x += move_vec.x * max_x_acceleration * delta
 	if(move_vec.x == 0):
@@ -41,6 +46,9 @@ func _process(delta):
 	
 	if(was_on_floor && !is_on_floor()):
 		$CoyoteTimer.start()
+	
+	if(is_on_floor()):
+		enable_double_jump = true
 	
 	update_animation()
 
